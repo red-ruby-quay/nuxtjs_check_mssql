@@ -1,0 +1,16 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+# THIS CONFIGURATION IS TAKEN EFFECT FOR APACHE SERVER
+# PUT IT ON THE SAME LEVEL OF YOUR NODE.JS APPLICATION DIRECTORY
+PassengerAppRoot "{points_to_the_root_directory_of_your_nodejs_app}"
+PassengerBaseURI "{the_app_will_be accessible_at_(/subfolder)_of_your_domain}"
+PassengerNodejs "{the_path_to_the_Node.js_binary_you_wish_to_use}"
+
+# TELLING THE WEB SERVER THAT THIS IS NODE.JS APP AND WILL BE BOOTSTRAPPED VIA app.js 
+PassengerAppType node
+PassengerStartupFile app.cjs
+
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END
