@@ -64,7 +64,7 @@ chokidar.watch(envPath).on('change', () => {
 testConnection();
 
 // Routes
-app.get('/', (req, res) => {
+app.get(process.env.APP_SUBFOLDER, (req, res) => {
     const queryOutput = connectionStatus.queryResult
     console.log(queryOutput)
   console.log(connectionStatus.queryOutput);
