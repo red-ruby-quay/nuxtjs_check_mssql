@@ -27,18 +27,20 @@ const config = {
 async function testConnection() {
   try {
     const pool = await sql.connect(config);
-    await pool.request().query('SELECT 1 as test');
+    const query_result = await pool.request().query(`SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_type = 'BASE TABLE'`);
     connectionStatus = {
       connected: true,
       message: 'Connection successful',
-      timestamp: new Date()
+      timestamp: new Date(),
+      queryResult: query_result.recordset,
     };
     await pool.close();
   } catch (error) {
     connectionStatus = {
       connected: false,
       message: `Connection failed: ${error.message}`,
-      timestamp: new Date()
+      timestamp: new Date(),
+      queryResult: 'KOSONG BRO...',
     };
   }
 }
@@ -63,6 +65,15 @@ testConnection();
 
 // Routes
 app.get('/', (req, res) => {
+    const queryOutput = connectionStatus.queryResult
+    console.log(queryOutput)
+  console.log(connectionStatus.queryOutput);
+    const queryResultHtml = queryOutput
+    ? `<ul>${queryOutput
+        .map(row => `<li>${row.table_name}</li>`)
+        .join('')}</ul>`
+    : 'No Data';
+
     const statusPage = `
       <html>
         <head>
@@ -81,10 +92,7 @@ app.get('/', (req, res) => {
         </head>
         <body>
           <h1>SQL Server Connection Status</h1>
-          <p>Last checked: ${connectionStatus.timestamp}</p>
-          <p>Status: ${connectionStatus.connected ? '✅ Connected' : '❌ Failed'}</p>
-          <p>Message: ${connectionStatus.message}</p>
-          
+
           <h2>Current Configuration</h2>
           <table>
             <tr><td>Server:</td><td>${process.env.DB_SERVER}</td></tr>
@@ -98,6 +106,11 @@ app.get('/', (req, res) => {
               </td>
             </tr>
           </table>
+
+          <p>Last checked: ${connectionStatus.timestamp}</p>
+          <p>Status: ${connectionStatus.connected ? '✅ Connected' : '❌ Failed'}</p>
+          <p>Message: ${connectionStatus.message}</p>
+          <p>List of Database Tables: ${queryResultHtml}</p>
   
           <script>
             function togglePassword() {
